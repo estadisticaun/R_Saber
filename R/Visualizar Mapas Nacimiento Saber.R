@@ -23,7 +23,7 @@ Salvar <- function(objeto, ruta, nombre){
   
 }
 
-# MATRICULADOS ---- 
+# Saber---- 
 
 # Mt1100 -Imp----
 
@@ -50,7 +50,7 @@ Matricula <- Mat_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -59,15 +59,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -116,7 +116,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -152,7 +152,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -163,7 +163,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -235,7 +235,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -426,10 +426,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -448,10 +448,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Matriculados", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Matriculados", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Matriculados", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Matriculados", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Matriculados", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Matriculados", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Matriculados", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Matriculados", "Nac_comb.html")
 
 
 # Mt1101 -Imp----
@@ -479,7 +479,7 @@ Matricula <- Mat_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -488,15 +488,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -545,7 +545,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -581,7 +581,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -592,7 +592,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -664,7 +664,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -854,10 +854,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -876,10 +876,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Matriculados", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Matriculados", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Matriculados", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Matriculados", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Matriculados", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Matriculados", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Matriculados", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Matriculados", "Nac_comb.html")
 
 
 # Mt1102 -Imp----
@@ -907,7 +907,7 @@ Matricula <- Mat_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -916,15 +916,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -973,7 +973,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -1009,7 +1009,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -1020,7 +1020,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -1092,7 +1092,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -1282,10 +1282,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -1304,10 +1304,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Matriculados", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Matriculados", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Matriculados", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Matriculados", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Matriculados", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Matriculados", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Matriculados", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Matriculados", "Nac_comb.html")
 
 # Mt1103 -Imp----
 
@@ -1334,7 +1334,7 @@ Matricula <- Mat_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -1343,15 +1343,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -1400,7 +1400,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -1436,7 +1436,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -1447,7 +1447,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -1519,7 +1519,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -1709,10 +1709,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -1731,10 +1731,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Matriculados", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Matriculados", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Matriculados", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Matriculados", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Matriculados", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Matriculados", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Matriculados", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Matriculados", "Nac_comb.html")
 
 
 # Mt1104 -Imp----
@@ -1762,7 +1762,7 @@ Matricula <- Mat_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -1771,15 +1771,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -1828,7 +1828,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -1864,7 +1864,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -1875,7 +1875,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -1946,7 +1946,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -2136,10 +2136,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -2158,10 +2158,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Matriculados", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Matriculados", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Matriculados", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Matriculados", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Matriculados", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Matriculados", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Matriculados", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Matriculados", "Nac_comb.html")
 
 
 # MATRICULA PREGRADO ---- 
@@ -2191,7 +2191,7 @@ Matricula <- Mat_Pre_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -2200,15 +2200,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -2257,7 +2257,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -2293,7 +2293,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -2304,7 +2304,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -2376,7 +2376,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -2566,10 +2566,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -2588,10 +2588,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Pregrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Pregrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Pregrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Pregrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Pregrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Pregrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Pregrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Pregrado", "Nac_comb.html")
 
 
 # MtPre1101 -Imp----
@@ -2619,7 +2619,7 @@ Matricula <- Mat_Pre_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -2628,15 +2628,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -2685,7 +2685,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -2721,7 +2721,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -2732,7 +2732,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -2804,7 +2804,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -2994,10 +2994,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -3016,10 +3016,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Pregrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Pregrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Pregrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Pregrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Pregrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Pregrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Pregrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Pregrado", "Nac_comb.html")
 
 
 # MtPre1102 -Imp----
@@ -3047,7 +3047,7 @@ Matricula <- Mat_Pre_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -3056,15 +3056,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -3113,7 +3113,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -3149,7 +3149,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -3160,7 +3160,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -3232,7 +3232,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -3422,10 +3422,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -3444,10 +3444,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Pregrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Pregrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Pregrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Pregrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Pregrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Pregrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Pregrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Pregrado", "Nac_comb.html")
 
 # MtPre1103 -Imp----
 
@@ -3474,7 +3474,7 @@ Matricula <- Mat_Pre_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -3483,15 +3483,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -3540,7 +3540,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -3576,7 +3576,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -3587,7 +3587,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -3659,7 +3659,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -3849,10 +3849,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -3871,10 +3871,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Pregrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Pregrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Pregrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Pregrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Pregrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Pregrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Pregrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Pregrado", "Nac_comb.html")
 
 
 # MtPre1104 -Imp----
@@ -3902,7 +3902,7 @@ Matricula <- Mat_Pre_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -3911,15 +3911,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -3968,7 +3968,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -4004,7 +4004,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -4015,7 +4015,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -4086,7 +4086,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados por municipio (0 y 1)
+# Paleta para mapa de Saberpor municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -4276,10 +4276,10 @@ mundept <- mundept %>%
   hideGroup("Mostrar <br> Departamentos")%>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 1 , 6 , 11 , 101 , 1001 ,  Inf ) ,  labels = c("0" ,  "1 - 5" ,  "6 - 10" ,  "11 - 100" ,  "101 - 1000" ,  "Más de 1000") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 201 ,  501 ,  2001 ,  10001 ,  Inf) ,  labels = c("0 - 200 " ,  "201 - 500" ,  "501 - 2000" ,  "2001 - 10000" ,  "Más  de 10000"))%>%
   
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
@@ -4298,10 +4298,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Pregrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Pregrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Pregrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Pregrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Pregrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Pregrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Pregrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Pregrado", "Nac_comb.html")
 
 
 # MATRICULA POSTGRADO ---- 
@@ -4331,7 +4331,7 @@ Matricula <- Mat_Pos_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -4340,15 +4340,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -4397,7 +4397,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -4433,7 +4433,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -4444,7 +4444,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -4513,7 +4513,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -4706,10 +4706,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -4728,10 +4728,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Postgrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Postgrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Postgrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Postgrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Postgrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Postgrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Postgrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Postgrado", "Nac_comb.html")
 
 
 # MtPos1101 -Imp----
@@ -4759,7 +4759,7 @@ Matricula <- Mat_Pos_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -4768,15 +4768,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -4825,7 +4825,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -4861,7 +4861,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -4872,7 +4872,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -4941,7 +4941,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -5134,10 +5134,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -5156,10 +5156,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Postgrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Postgrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Postgrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Postgrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Postgrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Postgrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Postgrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Postgrado", "Nac_comb.html")
 
 
 
@@ -5188,7 +5188,7 @@ Matricula <- Mat_Pos_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -5197,15 +5197,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -5254,7 +5254,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -5290,7 +5290,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -5301,7 +5301,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -5370,7 +5370,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -5563,10 +5563,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -5585,10 +5585,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Postgrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Postgrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Postgrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Postgrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Postgrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Postgrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Postgrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Postgrado", "Nac_comb.html")
 
 
 # MtPos1103 -Imp----
@@ -5616,7 +5616,7 @@ Matricula <- Mat_Pos_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -5625,15 +5625,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -5682,7 +5682,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -5718,7 +5718,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -5729,7 +5729,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -5798,7 +5798,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -5991,10 +5991,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -6013,10 +6013,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Postgrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Postgrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Postgrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Postgrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Postgrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Postgrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Postgrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Postgrado", "Nac_comb.html")
 
 
 # MtPos1104 -Imp----
@@ -6044,7 +6044,7 @@ Matricula <- Mat_Pos_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -6053,15 +6053,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -6110,7 +6110,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -6146,7 +6146,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -6157,7 +6157,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -6226,7 +6226,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -6419,10 +6419,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -6441,13 +6441,13 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Postgrado", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Postgrado", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Postgrado", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Postgrado", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Postgrado", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Postgrado", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Postgrado", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Postgrado", "Nac_comb.html")
 
 
-# MATRICULADOS PVEZ ---- 
+# SaberPVEZ ---- 
 
 # MtPvez1100 -Imp----
 
@@ -6474,7 +6474,7 @@ Matricula <- Mat_pvez_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -6483,15 +6483,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -6540,7 +6540,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -6576,7 +6576,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -6587,7 +6587,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -6656,7 +6656,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -6849,10 +6849,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -6871,10 +6871,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Mpv", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Mpv", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Mpv", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Mpv", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Mpv", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Mpv", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Mpv", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Mpv", "Nac_comb.html")
 
 
 # MtPvez1101 -Imp----
@@ -6902,7 +6902,7 @@ Matricula <- Mat_pvez_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -6911,15 +6911,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -6968,7 +6968,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -7004,7 +7004,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -7015,7 +7015,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -7084,7 +7084,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -7277,10 +7277,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -7299,10 +7299,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Mpv", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Mpv", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Mpv", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Mpv", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Mpv", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Mpv", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Mpv", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Mpv", "Nac_comb.html")
 
 
 
@@ -7331,7 +7331,7 @@ Matricula <- Mat_pvez_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -7340,15 +7340,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -7397,7 +7397,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -7433,7 +7433,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -7444,7 +7444,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -7513,7 +7513,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -7706,10 +7706,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -7728,10 +7728,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Mpv", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Mpv", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Mpv", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Mpv", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Mpv", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Mpv", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Mpv", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Mpv", "Nac_comb.html")
 
 
 # MtPvez1103 -Imp----
@@ -7759,7 +7759,7 @@ Matricula <- Mat_pvez_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -7768,15 +7768,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -7825,7 +7825,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -7861,7 +7861,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -7872,7 +7872,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -7941,7 +7941,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -8134,10 +8134,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -8156,10 +8156,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Mpv", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Mpv", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Mpv", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Mpv", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Mpv", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Mpv", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Mpv", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Mpv", "Nac_comb.html")
 
 
 # MtPvez1104 -Imp----
@@ -8187,7 +8187,7 @@ Matricula <- Mat_pvez_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -8196,15 +8196,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -8253,7 +8253,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -8289,7 +8289,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -8300,7 +8300,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -8369,7 +8369,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -8562,10 +8562,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -8584,10 +8584,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Mpv", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Mpv", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Mpv", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Mpv", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Mpv", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Mpv", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Mpv", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Mpv", "Nac_comb.html")
 
 
 # MATRICULA PVEZ PRE ---- 
@@ -8617,7 +8617,7 @@ Matricula <- Mat_pvez_pre_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -8626,15 +8626,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -8683,7 +8683,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -8719,7 +8719,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -8730,7 +8730,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -8799,7 +8799,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -8992,10 +8992,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -9014,10 +9014,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Mpvpre", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Mpvpre", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Mpvpre", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Mpvpre", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Mpvpre", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Mpvpre", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Mpvpre", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Mpvpre", "Nac_comb.html")
 
 
 # MtPvezPre1101 -Imp----
@@ -9045,7 +9045,7 @@ Matricula <- Mat_pvez_pre_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -9054,15 +9054,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -9111,7 +9111,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -9147,7 +9147,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -9158,7 +9158,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -9227,7 +9227,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -9420,10 +9420,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -9442,10 +9442,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Mpvpre", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Mpvpre", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Mpvpre", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Mpvpre", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Mpvpre", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Mpvpre", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Mpvpre", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Mpvpre", "Nac_comb.html")
 
 
 
@@ -9474,7 +9474,7 @@ Matricula <- Mat_pvez_pre_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -9483,15 +9483,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -9540,7 +9540,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -9576,7 +9576,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -9587,7 +9587,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -9656,7 +9656,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -9849,10 +9849,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -9871,10 +9871,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Mpvpre", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Mpvpre", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Mpvpre", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Mpvpre", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Mpvpre", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Mpvpre", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Mpvpre", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Mpvpre", "Nac_comb.html")
 
 
 # MtPvezPre1103 -Imp----
@@ -9902,7 +9902,7 @@ Matricula <- Mat_pvez_pre_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -9911,15 +9911,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -9968,7 +9968,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -10004,7 +10004,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -10015,7 +10015,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -10084,7 +10084,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -10277,10 +10277,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -10299,10 +10299,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Mpvpre", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Mpvpre", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Mpvpre", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Mpvpre", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Mpvpre", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Mpvpre", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Mpvpre", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Mpvpre", "Nac_comb.html")
 
 
 # MtPvezPre1104 -Imp----
@@ -10330,7 +10330,7 @@ Matricula <- Mat_pvez_pre_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -10339,15 +10339,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -10396,7 +10396,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -10432,7 +10432,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -10443,7 +10443,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -10512,7 +10512,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -10705,10 +10705,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -10727,10 +10727,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Mpvpre", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Mpvpre", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Mpvpre", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Mpvpre", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Mpvpre", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Mpvpre", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Mpvpre", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Mpvpre", "Nac_comb.html")
 
 # MATRICULA PVEZ POS ---- 
 
@@ -10759,7 +10759,7 @@ Matricula <- Mat_pvez_pos_Nacional %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -10768,15 +10768,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -10825,7 +10825,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -10861,7 +10861,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -10872,7 +10872,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -10941,7 +10941,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -11134,10 +11134,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -11156,10 +11156,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Nal/Mpvpos", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Nal/Mpvpos", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Nal/Mpvpos", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Nal/Mpvpos", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Nal/Mpvpos", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Nal/Mpvpos", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Nal/Mpvpos", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Nal/Mpvpos", "Nac_comb.html")
 
 
 # MtPvezPos1101 -Imp----
@@ -11187,7 +11187,7 @@ Matricula <- Mat_pvez_pos_Bogota %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -11196,15 +11196,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -11253,7 +11253,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -11289,7 +11289,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -11300,7 +11300,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -11369,7 +11369,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -11562,10 +11562,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -11584,10 +11584,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Bog/Mpvpos", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Bog/Mpvpos", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Bog/Mpvpos", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Bog/Mpvpos", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Bog/Mpvpos", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Bog/Mpvpos", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Bog/Mpvpos", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Bog/Mpvpos", "Nac_comb.html")
 
 
 
@@ -11616,7 +11616,7 @@ Matricula <- Mat_pvez_pos_Medellin %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -11625,15 +11625,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -11682,7 +11682,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -11718,7 +11718,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -11729,7 +11729,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -11798,7 +11798,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -11991,10 +11991,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -12013,10 +12013,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Med/Mpvpos", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Med/Mpvpos", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Med/Mpvpos", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Med/Mpvpos", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Med/Mpvpos", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Med/Mpvpos", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Med/Mpvpos", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Med/Mpvpos", "Nac_comb.html")
 
 
 # MtPvezPos1103 -Imp----
@@ -12044,7 +12044,7 @@ Matricula <- Mat_pvez_pos_Manizales %>% filter(YEAR == ano, SEMESTRE == semestre
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -12053,15 +12053,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -12110,7 +12110,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -12146,7 +12146,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -12157,7 +12157,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -12226,7 +12226,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -12419,10 +12419,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -12441,10 +12441,10 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Man/Mpvpos", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Man/Mpvpos", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Man/Mpvpos", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Man/Mpvpos", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Man/Mpvpos", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Man/Mpvpos", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Man/Mpvpos", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Man/Mpvpos", "Nac_comb.html")
 
 
 # MtPvezPos1104 -Imp----
@@ -12472,7 +12472,7 @@ Matricula <- Mat_pvez_pos_Palmira %>% filter(YEAR == ano, SEMESTRE == semestre)
 
 # Inicio preparación datos mapas
 
-Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
+Saber<- Matricula %>% select(depart_asp=DEP_NAC,
                                      codept_asp=COD_DEP_NAC,
                                      ciudad_asp=CIU_NAC,
                                      codecity_asp=COD_CIU_NAC,
@@ -12481,15 +12481,15 @@ Matriculados <- Matricula %>% select(depart_asp=DEP_NAC,
   filter(!is.na(depart_asp))
 
 
-# Total de Matriculados por departamento de nacimiento 
+# Total de Saberpor departamento de nacimiento 
 
-CANT_MAT <- Matriculados %>% group_by(codept_asp) %>% summarise(Total=n())
+CANT_MAT <- Saber%>% group_by(codept_asp) %>% summarise(Total=n())
 
 
-# Total de Matriculados por municipio de nacimiento 
+# Total de Saberpor municipio de nacimiento 
 # Se eliminan los rgistros con datos faltantes en municipio de nacimiento
 
-cantasp_city <- Matriculados %>% group_by(codecity_asp) %>% summarise(Total=n())
+cantasp_city <- Saber%>% group_by(codecity_asp) %>% summarise(Total=n())
 cantasp_city <- cantasp_city %>% filter(!is.na(codecity_asp))
 # 1 registro 2019-1
 
@@ -12538,7 +12538,7 @@ for(i in 1:1122){
   codigos[i,1] = json_data$features[[i]]$properties$MPIOS
 }
 
-# Insertar cantidad de Matriculados por municipio de nacimiento a la matriz 
+# Insertar cantidad de Saberpor municipio de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de municipios del JSON
 
 for(i in cantasp_city$codecity_asp){
@@ -12574,7 +12574,7 @@ for(i in 1:33){
   codigos2[i,1] = as.integer(as.character(colombia.R@data$DPTO[i]))
 }
 
-# Insertar cantidad de Matriculados por departamento de nacimiento a la matriz 
+# Insertar cantidad de Saberpor departamento de nacimiento a la matriz 
 # Importante insertar en el orden de códigos de departamentos del objeto
 
 for(i in CANT_MAT$codept_asp){
@@ -12585,7 +12585,7 @@ for(i in CANT_MAT$codept_asp){
 
 colombia.R@data<-colombia.R@data[2] 
 
-# Insertar en el objeto spatialPoly .. la cantidad de Matriculados por depto de nacimiento
+# Insertar en el objeto spatialPoly .. la cantidad de Saberpor depto de nacimiento
 
 colombia.R@data$CANT_MAT <- codigos2[,2]
 
@@ -12654,7 +12654,7 @@ simpleCap <- function(x) {
 
 centroidecol <- centro_dept%>% filter(dept  == "CUNDINAMARCA")
 
-# Paleta para mapa de matriculados en postgrado por municipio (0 y 1)
+# Paleta para mapa de Saberen postgrado por municipio (0 y 1)
 
 pal_uno <- colorBin(palette = c("#fdae61" ,  "#a6d96a") , bins = c(0 , 1 ,  35000))
 
@@ -12847,10 +12847,10 @@ mundept <- mundept %>%
   addPolylines(data =  colombia.R ,  stroke = T ,  smoothFactor = 0.05 ,  color = '#005a32' ,  weight = 2 ,  group = "Municipios")%>%
   
   addLegend("bottomright" ,  colors = c('#ffffcc' , '#d9f0a3' , '#addd8e' , '#78c679' , '#31a354' , '#006837') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "municipio", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "municipio", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0, 1, 2, 4, 11, 101, Inf) ,  labels = c("0" ,  "1" ,  "2 - 3" ,  "4 - 10" ,  "11 - 100" ,  "Más de 100") ,  layerId = )%>%
   addLegend("bottomright" ,  colors = c('#d0d1e6' , '#a6bddb' , '#74a9cf' , '#2b8cbe' , '#045a8d') ,  values = ~CANT_MAT ,  
-            title = paste("Matriculados por", "<br>", "departamento", "<br>", periodo_actual_titulo), 
+            title = paste("Saberpor", "<br>", "departamento", "<br>", periodo_actual_titulo), 
             opacity = 1 ,  bins = c(0 , 21 , 51 , 201 , 1001 , Inf) ,  labels = c("0 - 20 " ,  "21 - 50" ,  "51 - 200" ,  "201 - 1000" ,  "Más  de 1000"))%>%
   addScaleBar(position = "bottomleft" , scaleBarOptions(metric = T ,  imperial =  F))%>%
   addMiniMap(position = "bottomleft" , zoomAnimation = T ,  toggleDisplay = T ,  autoToggleDisplay = T)%>%
@@ -12869,9 +12869,9 @@ mundept
 
 # Exportar ----
 
-Salvar(municipios2, "G_Matriculados/Pal/Mpvpos", "Nac_col1.html")
-Salvar(municipios, "G_Matriculados/Pal/Mpvpos", "Nac_mun.html")
-Salvar(colombia, "G_Matriculados/Pal/Mpvpos", "Nac_dpto.html")
-Salvar(mundept, "G_Matriculados/Pal/Mpvpos", "Nac_comb.html")
+Salvar(municipios2, "G_Saber/Pal/Mpvpos", "Nac_col1.html")
+Salvar(municipios, "G_Saber/Pal/Mpvpos", "Nac_mun.html")
+Salvar(colombia, "G_Saber/Pal/Mpvpos", "Nac_dpto.html")
+Salvar(mundept, "G_Saber/Pal/Mpvpos", "Nac_comb.html")
 
 
